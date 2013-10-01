@@ -1,18 +1,30 @@
-module Randomizer where
+module Randomizer(
+    initRandomizator
+    ) where
+    
 import System.Random
-
-data Randomizator = Randomizator {
-                                    getRandomChar :: IO Char
-                                    getRandomBool :: IO Bool
-                                 }
+import Datatypes
+import Test.QuickCheck
+import Test.QuickCheck.Gen
 
 
-initRandomizator :: [Char] -> -- snake symbols
+initRandomizator :: [Char] ->     -- symbols for randomizer
+                    Int ->        -- max snake size
                     Randomizator
-initRandomizator snakeSymbols =
-    Randomizator getRandomChars
+initRandomizator charSymbols snakeSize =
+    Randomizator getSomeChar' getSomeBool' getSomeSnakeSize'
     where
-        getRandomChars :: IO Char
-        getRandomChars = do
+        getSomeChar' :: IO Char
+        getSomeChar' = do
             gen <- newStdGen
-            return $ unGen (elements snakeSymbols)
+            return $ unGen (elements charSymbols) gen 1
+
+        getSomeBool' :: IO Bool
+        getSomeBool' = do
+            gen <- newStdGen
+            return $ unGen (elements [True, False]) gen 1
+
+        getSomeSnakeSize' :: IO Int
+        getSomeSnakeSize' = do
+            gen <- newStdGen
+            return $ unGen (choose (2, snakeSize)) gen 1

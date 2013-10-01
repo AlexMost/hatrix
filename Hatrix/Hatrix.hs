@@ -28,6 +28,22 @@ processSnakes HState{winSize} =
         moveSnakesForward = map moveForward
 
 
+getNewSnake :: HState ->   -- state
+               Coord  ->   -- Starting Point
+               Int    ->   -- Snake length
+               IO Snake
+getNewSnake st@HState{randomizer} coord len = Snake <$> createParts
+    where
+        newCoords = (coord:createTail coord len)
+        createParts :: IO [SnakeBody]
+        createParts = mapM createPart newCoords
+        createPart :: Coord -> IO SnakeBody
+        createPart coord = do
+            ch <- getSomeChar randomizer
+            return $ SnakeBody coord ch
+
+
+
 mainLoopStart :: HState -> IO (Either String HState)
 mainLoopStart state@HState{snakes} = do
     wclear stdScr

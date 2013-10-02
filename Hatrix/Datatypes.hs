@@ -40,7 +40,6 @@ createTail startPoint tailLength = createTail' tailLength [startPoint]
             | otherwise = createTail' (count-1) (coords ++ [back' $ last coords])
 
 
-
 data SnakeBody = SnakeBody { coord    :: Coord
                             , symbol  :: Char
                            } deriving (Eq, Show)   
@@ -53,7 +52,7 @@ isVisible :: (Int, Int) -> Snake -> Bool
 isVisible (winH, winW) Snake{parts} = any inWindow coords
     where 
         coords = map (\SnakeBody{coord} -> coord) parts
-        inWindow Coord{x,y} = y < winH && x < winW
+        inWindow Coord{x,y} = x < winH && y < winW
 
 
 moveForward :: Snake -> Snake
@@ -67,15 +66,15 @@ getNewSnake :: Randomizator ->   -- state
                IO Snake
 getNewSnake randomizer coord len = Snake <$> createParts
     where
-        newCoords = (coord:createTail coord len)
+        newCoords = coord: createTail coord len
 
         createParts :: IO [SnakeBody]
         createParts = mapM createPart newCoords
 
         createPart :: Coord -> IO SnakeBody
-        createPart coord = do
+        createPart coord' = do
             ch <- getSomeChar randomizer
-            return $ SnakeBody coord ch
+            return $ SnakeBody coord' ch
 
 
 data HState = HState {  snakes         :: [Snake]

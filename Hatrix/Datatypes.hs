@@ -11,23 +11,25 @@ module Datatypes(
     isVisible,
     moveForward,
     createTail,
-    getNewSnake
+    getNewSnake,
+    getColSnakes
     ) where
 
 import Control.Applicative
 
-data Randomizator = Randomizator {  getSomeChar      :: IO Char
-                                  , getSomeBool      :: IO Bool
-                                  , getSomeSnakeSize :: IO Int
+data Randomizator = Randomizator {  getSomeChar       :: IO Char
+                                  , getSomeBool       :: IO Bool
+                                  , getSomeSnakeSize  :: IO Int
+                                  , getRandomColCoord :: Int -> Int -> IO Coord
                                  }
 
 
-data Coord = Coord {x :: Int, y :: Int} deriving (Show, Eq)
+data Coord = Coord {y :: Int, x :: Int} deriving (Show, Eq)
 forward' :: Coord -> Coord
-forward' c@Coord{x} = c{x=x+1}
+forward' c@Coord{y} = c{y=y+1}
 
 back' :: Coord -> Coord
-back' c@Coord{x} = c{x=x-1}
+back' c@Coord{y} = c{y=y-1}
 
 createTail :: Coord -> -- starting coordinate
               Int ->   -- tail length
@@ -52,12 +54,19 @@ isVisible :: (Int, Int) -> Snake -> Bool
 isVisible (winH, winW) Snake{parts} = any inWindow coords
     where 
         coords = map (\SnakeBody{coord} -> coord) parts
-        inWindow Coord{x,y} = x < winH && y < winW
+        inWindow Coord{y, x} = y < winH && x < winW
 
 
 moveForward :: Snake -> Snake
 moveForward Snake{parts}= Snake $ map forwardPart parts
     where forwardPart sb@SnakeBody{coord} = sb{coord=forward' coord}
+
+
+getColSnakes :: Int -> [Snake] -> [Snake]
+getColSnakes y' snakes= filter hasY snakes
+  where 
+    hasY Snake{parts} = any hasY' parts
+    hasY' SnakeBody{coord} = y coord == y'
 
 
 getNewSnake :: Randomizator ->   -- state
@@ -81,4 +90,5 @@ data HState = HState {  snakes         :: [Snake]
                       , randomizer     :: Randomizator
                       , winSize        :: (Int, Int) 
                       , snakesCount    :: Int
+                      , snakeLen       :: Int
                       }

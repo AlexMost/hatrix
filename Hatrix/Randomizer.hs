@@ -12,7 +12,8 @@ initRandomizator :: [Char] ->     -- symbols for randomizer
                     Int ->        -- max snake size
                     Randomizator
 initRandomizator charSymbols snakeSize =
-    Randomizator getSomeChar' getSomeBool' getSomeSnakeSize'
+    (Randomizator 
+        getSomeChar' getSomeBool' getSomeSnakeSize' getRandomColCoord')
     where
         getSomeChar' :: IO Char
         getSomeChar' = do
@@ -28,3 +29,11 @@ initRandomizator charSymbols snakeSize =
         getSomeSnakeSize' = do
             gen <- newStdGen
             return $ unGen (choose (2, snakeSize)) gen 1
+
+        getRandomColCoord' x' maxY = do
+            y' <- getY'
+            return $ Coord y' x'
+            where 
+                getY' = do
+                    gen <- newStdGen
+                    return $ unGen (choose (0, maxY)) gen 1

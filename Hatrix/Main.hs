@@ -1,13 +1,16 @@
 import UI.HSCurses.Curses
-import System.IO
+import UI.HSCurses.CursesHelper
 import Datatypes
 import Hatrix
 import Randomizer
 
 main :: IO ()
 main = do
-  hSetBuffering stdin NoBuffering
-  initCurses
+  start
+  startColor
+  useDefaultColors
+  initPair (Pair 2) green black
+  initPair (Pair 1) white black
   _ <- leaveOk True
   winSize' <- scrSize
   cursSet CursorInvisible
@@ -15,7 +18,7 @@ main = do
   msg <- mainLoop $ (HState 
                         [] 
                         randomizer'
-                        (170, (snd winSize'))
+                        ((fst winSize'), 100)
                         snakesCount'
                         snakeLen')
   putStrLn msg
@@ -23,5 +26,5 @@ main = do
   where
     snakeChars = ['a', 'b', 'c', 'f']
     snakeLen' = 15
-    snakesCount' = 1000
+    snakesCount' = 300
     randomizer' = initRandomizator snakeChars snakeLen'

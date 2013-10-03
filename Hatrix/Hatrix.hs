@@ -73,7 +73,7 @@ mainLoopStart state@HState{snakes=snakes'} = do
     draw state
     newState <- appendSnakesToCols processedState
     refresh
-    threadDelay 10000
+    threadDelay 80000
     key <- keyListen
     case key of
         Just 'z'  -> return $ Left "bye - bye"

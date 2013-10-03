@@ -4,7 +4,6 @@ import Datatypes
 import Hatrix
 import Randomizer
 
-
 main :: IO ()
 main = do
   hSetBuffering stdin NoBuffering
@@ -13,16 +12,16 @@ main = do
   winSize' <- scrSize
   cursSet CursorInvisible
   echo False
-  sn <- getNewSnake randomizer' (Coord 10 3) 5
   msg <- mainLoop $ (HState 
-                        [sn] 
+                        [] 
                         randomizer'
-                        winSize'
-                        snakesCount')
+                        (200, (snd winSize'))
+                        snakesCount'
+                        snakeLen')
   putStrLn msg
   endWin
   where
     snakeChars = ['a', 'b', 'c', 'f']
-    snakeLen = 7
-    snakesCount' = 50
-    randomizer' = initRandomizator snakeChars snakeLen
+    snakeLen' = 15
+    snakesCount' = 1000
+    randomizer' = initRandomizator snakeChars snakeLen'

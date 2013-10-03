@@ -12,13 +12,11 @@ import Control.Exception
 
 write :: [Char] -> Coord -> IO ()
 write str (Coord x y) = do
-    attrSet attr0 (Pair 2)
     try $ mvWAddStr stdScr x y str :: IO (Either SomeException ())
     return ()
 
 writeHead :: [Char] -> Coord -> IO ()
 writeHead str (Coord x y) = do
-    attrSet attr0 (Pair 1)
     try $ mvWAddStr stdScr x y str :: IO (Either SomeException ())
     return ()
 
@@ -29,7 +27,9 @@ class Draw a where
 
 instance Draw Snake where
     draw Snake{parts=(h:otherParts)} = do
+        attrSet attr0 (Pair 2)
         mapM_ drawSnakeBody otherParts
+        attrSet attr0 (Pair 1)
         writeHead [(symbol h)] (coord h)
         where
             drawSnakeBody SnakeBody{coord, symbol} =

@@ -10,6 +10,8 @@ import Control.Applicative
 import UI.HSCurses.Curses
 import Draw
 import Datatypes
+import System.Random.Shuffle
+import System.Random
 
 
 keyListen :: IO (Maybe Char)
@@ -49,20 +51,27 @@ appendSnakeToCol st@HState{snakes, randomizer, winSize, snakeLen, snakesCount} n
 
 
 appendSnakesToCols :: HState ->
-                      Int ->     -- win width
                       IO HState  -- state with new snakes
-appendSnakesToCols st colIndex
-    | colIndex <= -1 = return st
-    | otherwise = do
-        newColState <- appendSnakeToCol st colIndex
-        appendSnakesToCols newColState (colIndex - 1)
+appendSnakesToCols st@HState{winSize=(_, w)} = do
+    gen <- newStdGen
+    shuffledCols <- return $ shuffle' [0..(w- 1)] w gen
+    appendSnakesToCols' st shuffledCols
+
+
+appendSnakesToCols' :: HState ->
+                       [Int] ->  -- shuffled list of cols
+                       IO HState
+appendSnakesToCols' st [] = return st
+appendSnakesToCols' st (currentNum: colNums) = do
+    newColState <- appendSnakeToCol st currentNum
+    appendSnakesToCols' newColState colNums 
 
 
 mainLoopStart :: HState -> IO (Either String HState)
-mainLoopStart state@HState{snakes=snakes', winSize} = do
+mainLoopStart state@HState{snakes=snakes'} = do
     wclear stdScr
     draw state
-    newState <- appendSnakesToCols processedState (fst winSize)
+    newState <- appendSnakesToCols processedState
     refresh
     threadDelay 10000
     key <- keyListen

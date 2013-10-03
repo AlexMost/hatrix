@@ -15,7 +15,7 @@ main = do
   msg <- mainLoop $ (HState 
                         [] 
                         randomizer'
-                        (200, (snd winSize'))
+                        (170, (snd winSize'))
                         snakesCount'
                         snakeLen')
   putStrLn msg

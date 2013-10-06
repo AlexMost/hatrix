@@ -18,13 +18,16 @@ main = do
   msg <- mainLoop $ (HState 
                         [] 
                         randomizer'
-                        ((fst winSize'), 170)
+                        ((fst winSize'), winWidth)
                         snakesCount'
-                        snakeLen')
+                        snakeLen'
+                        delay)
   putStrLn msg
   endWin
   where
     snakeChars = ['a', 'b', 'c', 'f']
     snakeLen' = 15
-    snakesCount' = 500
+    snakesCount' = 250
     randomizer' = initRandomizator snakeChars snakeLen'
+    delay = 90000
+    winWidth = 150

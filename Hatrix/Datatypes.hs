@@ -20,7 +20,9 @@ import Control.Applicative
 data Randomizator = Randomizator {  getSomeChar       :: IO Char
                                   , getSomeBool       :: IO Bool
                                   , getSomeSnakeSize  :: IO Int
-                                  , getRandomColCoord :: Int -> Int -> IO Coord
+                                  , getRandomColCoord :: Int -> -- column
+                                                         Int -> -- max Y
+                                                         IO Coord
                                  }
 
 
@@ -91,4 +93,5 @@ data HState = HState {  snakes         :: [Snake]
                       , winSize        :: (Int, Int) 
                       , snakesCount    :: Int
                       , snakeLen       :: Int
-                      }
+                      , delay          :: Int
+                      } 

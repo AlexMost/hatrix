@@ -68,12 +68,12 @@ appendSnakesToCols' st (currentNum: colNums) = do
 
 
 mainLoopStart :: HState -> IO (Either String HState)
-mainLoopStart state@HState{snakes=snakes'} = do
+mainLoopStart state@HState{snakes=snakes', delay} = do
     wclear stdScr
     draw state
     newState <- appendSnakesToCols processedState
     refresh
-    threadDelay 90000
+    threadDelay delay
     key <- keyListen
     case key of
         Just 'z'  -> return $ Left "bye - bye"
